@@ -1,4 +1,4 @@
-package com.fiap.hospitalar;
+package com.fiap.hospitalar.agendamento;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
