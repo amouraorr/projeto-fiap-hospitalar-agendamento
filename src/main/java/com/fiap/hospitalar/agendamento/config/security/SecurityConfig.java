@@ -1,3 +1,4 @@
+
 package com.fiap.hospitalar.agendamento.config.security;
 
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,19 @@ public class SecurityConfig  {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().permitAll() // Permitir acesso a todas as requisições
+                )
+                .csrf(csrf -> csrf.disable()) // Desabilita CSRF para facilitar os testes
+                .httpBasic(Customizer.withDefaults());
+
+        return http.build();
+    }
+
+
+/*    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/consultas/**").hasRole("MEDICO")
                         .requestMatchers("/historico/**").hasAnyRole("MEDICO", "ENFERMEIRO")
                         .requestMatchers("/minhas-consultas/**").hasRole("PACIENTE")
@@ -31,5 +45,6 @@ public class SecurityConfig  {
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
-    }
+    }*/
+
 }

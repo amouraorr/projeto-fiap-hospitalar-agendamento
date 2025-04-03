@@ -11,9 +11,9 @@
     </parent>
 
     <groupId>com.fiap.hospitalar</groupId>
-    <artifactId>demo</artifactId>
+    <artifactId>agendamento-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
+    <name>Agendamento Service</name>
     <description>Projeto hospitalar acessível a médicos, enfermeiros e pacientes.</description>
 
     <properties>
