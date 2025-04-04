@@ -14,7 +14,7 @@
     <artifactId>agendamento-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Agendamento Service</name>
-    <description>Projeto hospitalar acessível a médicos, enfermeiros e pacientes.</description>
+    <description>Projeto hospitalar de agendamento acessível a médicos, enfermeiros e pacientes.</description>
 
     <properties>
         <java.version>17</java.version>
@@ -94,6 +94,7 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
+            <version>3.3.4</version>
         </dependency>
         <!-- GraphQL -->
 <!--        <dependency>

@@ -1,0 +1,4 @@
+FROM wurstmeister/kafka:latest
+
+# Defina o entrypoint diretamente para iniciar o Kafka
+ENTRYPOINT ["start-kafka.sh"]
