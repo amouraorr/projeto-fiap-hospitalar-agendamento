@@ -1,16 +1,21 @@
 package com.fiap.hospitalar.agendamento.message;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import com.fiap.hospitalar.agendamento.dto.response.MedicalAppointmentResponseDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
 
-@Data
-@RequiredArgsConstructor
+@Service
 public class KafkaProducerMessage {
-    private final KafkaTemplate<String, KafkaProducerMessage> kafkaTemplate;
-    private static final String KAFKA_TOPIC = "consultas-agendadas";
 
-    public void sendMessage(KafkaProducerMessage message) {
-        kafkaTemplate.send(KAFKA_TOPIC, message);
+    private final KafkaTemplate<String, MedicalAppointmentResponseDTO> kafkaTemplate;
+
+    @Autowired
+    public KafkaProducerMessage(KafkaTemplate<String, MedicalAppointmentResponseDTO> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
+
+    public void sendMessage(MedicalAppointmentResponseDTO message) {
+        kafkaTemplate.send("consultas-agendadas", message);
     }
 }

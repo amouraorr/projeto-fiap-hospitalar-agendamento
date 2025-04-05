@@ -4,6 +4,7 @@ import com.fiap.hospitalar.agendamento.dto.request.MedicalAppointmentRequestDTO;
 import com.fiap.hospitalar.agendamento.dto.response.MedicalAppointmentResponseDTO;
 import com.fiap.hospitalar.agendamento.mapper.MedicalAppointmentMapper;
 import com.fiap.hospitalar.agendamento.model.MedicalAppointment;
+import com.fiap.hospitalar.agendamento.message.KafkaProducerMessage;
 import com.fiap.hospitalar.agendamento.service.MedicalAppointmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class MedicalAppointmentController {
     @Autowired
     private MedicalAppointmentService appointmentService;
 
+    @Autowired
+    private KafkaProducerMessage kafkaMessageService; // Injetar o KafkaProducerMessage
 
     @PostMapping
     @Operation(summary = "Criar uma nova consulta médica", description = "Cria uma nova consulta médica com os detalhes fornecidos.")
@@ -28,6 +31,10 @@ public class MedicalAppointmentController {
         try {
             MedicalAppointment appointment = MedicalAppointmentMapper.INSTANCE.toEntity(appointmentRequestDTO);
             MedicalAppointment createdAppointment = appointmentService.save(appointment);
+
+            // Enviar mensagem para o Kafka
+            kafkaMessageService.sendMessage(MedicalAppointmentMapper.INSTANCE.toResponseDTO(createdAppointment));
+
             return new ResponseEntity<>(MedicalAppointmentMapper.INSTANCE.toResponseDTO(createdAppointment), HttpStatus.CREATED);
         } catch (Exception e) {
             // Log the error
@@ -36,6 +43,18 @@ public class MedicalAppointmentController {
         }
     }
 
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualizar uma consulta médica", description = "Atualiza uma consulta médica existente")
+    public ResponseEntity<MedicalAppointmentResponseDTO> updateAppointment(@PathVariable Long id, @RequestBody MedicalAppointmentRequestDTO appointmentRequestDTO) {
+        MedicalAppointment appointment = MedicalAppointmentMapper.INSTANCE.toEntity(appointmentRequestDTO);
+        appointment.setId(id); // Define o ID da consulta a ser atualizada
+        MedicalAppointment updatedAppointment = appointmentService.update(appointment);
+
+        // Enviar mensagem para o Kafka
+        kafkaMessageService.sendMessage(MedicalAppointmentMapper.INSTANCE.toResponseDTO(updatedAppointment));
+
+        return new ResponseEntity<>(MedicalAppointmentMapper.INSTANCE.toResponseDTO(updatedAppointment), HttpStatus.OK);
+    }
 
     @GetMapping
     @Operation(summary = "Obter todas as consultas médicas", description = "Recupera uma lista de todas as consultas médicas.")
@@ -52,15 +71,6 @@ public class MedicalAppointmentController {
     public ResponseEntity<MedicalAppointmentResponseDTO> getAppointmentById(@PathVariable Long id) {
         MedicalAppointment appointment = appointmentService.findById(id);
         return new ResponseEntity<>(MedicalAppointmentMapper.INSTANCE.toResponseDTO(appointment), HttpStatus.OK);
-    }
-
-    @PutMapping("/{id}")
-    @Operation(summary = "Atualizar uma consulta médica", description = "Atualiza uma consulta médica existente")
-    public ResponseEntity<MedicalAppointmentResponseDTO> updateAppointment(@PathVariable Long id, @RequestBody MedicalAppointmentRequestDTO appointmentRequestDTO) {
-        MedicalAppointment appointment = MedicalAppointmentMapper.INSTANCE.toEntity(appointmentRequestDTO);
-        appointment.setId(id); // Define o ID da consulta a ser atualizada
-        MedicalAppointment updatedAppointment = appointmentService.update(appointment);
-        return new ResponseEntity<>(MedicalAppointmentMapper.INSTANCE.toResponseDTO(updatedAppointment), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

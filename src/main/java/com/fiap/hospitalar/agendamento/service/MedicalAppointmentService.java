@@ -1,6 +1,7 @@
 package com.fiap.hospitalar.agendamento.service;
 
 import com.fiap.hospitalar.agendamento.dto.response.MedicalAppointmentResponseDTO;
+import com.fiap.hospitalar.agendamento.message.KafkaProducerMessage;
 import com.fiap.hospitalar.agendamento.model.MedicalAppointment;
 import com.fiap.hospitalar.agendamento.repository.MedicalAppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,9 @@ public class MedicalAppointmentService {
     private MedicalAppointmentRepository appointmentRepository;
 
     @Autowired
-    private final KafkaMessageService kafkaMessageService;
+    private final KafkaProducerMessage kafkaMessageService;
 
-    public MedicalAppointmentService(KafkaMessageService kafkaMessageService) {
+    public MedicalAppointmentService(KafkaProducerMessage kafkaMessageService) {
         this.kafkaMessageService = kafkaMessageService;
     }
 
